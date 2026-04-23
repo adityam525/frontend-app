@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import API from "../api";
 
 function Dashboard() {
   const [user, setUser] = useState(null);
@@ -11,7 +11,7 @@ function Dashboard() {
     try{
       const token = localStorage.getItem("token");
 
-      const res = await axios.get("http://localhost:3001/tasks", {
+      const res = await API.get("/tasks", {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -29,7 +29,7 @@ function Dashboard() {
     try{
       const token = localStorage.getItem("token");
 
-      await axios.post("http://localhost:3001/tasks", 
+      await API.post("/tasks", 
         {title},
         {
           headers: {
@@ -50,7 +50,7 @@ function Dashboard() {
     try{
       const token = localStorage.getItem("token");
 
-      await axios.delete(`http://localhost:3001/tasks/${id}`, 
+      await API.delete(`/tasks/${id}`, 
         {
           headers: {
             Authorization: `Bearer ${token}`
@@ -69,7 +69,7 @@ function Dashboard() {
     try{
       const token = localStorage.getItem("token");
 
-      await axios.put(`http://localhost:3001/tasks/${id}`, 
+      await API.put(`/tasks/${id}`, 
         {title},
         {
           headers: {
@@ -91,7 +91,7 @@ function Dashboard() {
       try {
         const token = localStorage.getItem("token");
 
-        const res = await axios.get("http://localhost:3001/profile", {
+        const res = await API.get("/profile", {
           headers: {
             Authorization: `Bearer ${token}`
           }
