@@ -5,7 +5,7 @@ function Dashboard() {
   const [user, setUser] = useState(null);
   const [tasks, setTasks] = useState([]);
   const [title, setTitle] = useState("");
-
+  const [aiInput, setAiInput] = useState("");
 
   const fetchTasks = async ()=>{
     try{
@@ -86,6 +86,16 @@ function Dashboard() {
     }
   }
 
+  const generateTasks = async ()=>{
+    const token = localStorage.getItem("token");
+
+    await API.post('/ai-task', { prompt: aiInput },
+    { headers: { Authorization: token } })
+
+    setAiInput("");
+    fetchTasks();
+  }
+
   useEffect(() => {
     const fetchProfile = async () => {
       try {
@@ -108,27 +118,40 @@ function Dashboard() {
   }, []);
 
   return (
-    <div>
-      <h2>Dashboard</h2>
-      {user && <p>Welcome {user.name}</p>}
+    <div className="flex w-full h-full items-center justify-center">
+      <div className="flex flex-col h-10 p-4 b-2 space-y-4 space-x-4">
+        <h2>Dashboard</h2>
+        {user && <p>Welcome {user.name}</p>}
 
-      <input
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-        placeholder="New task"
-      />
+        <input
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          placeholder="New task"
+        />
+        <button className="bg-green-800 p-2 text-white font-bold rounded-sm" onClick={addTask}>Add</button>
 
-      <button onClick={addTask}>Add</button>
 
-      <ul>
-        {tasks.map((task) => (
-          <li key={task._id}>
-            {task.title}
-            <button onClick={() => deleteTask(task._id)}>Delete</button>
-            <button onClick={() => updateTask(task._id)}>Update</button>
-          </li>
-        ))}
-      </ul>
+        <input
+          value={aiInput}
+          onChange={(e) => setAiInput(e.target.value)}
+          placeholder="e.g. Plan gym routine"
+        />
+
+        <button onClick={generateTasks}>
+          Generate Tasks with AI
+        </button>
+
+        <ul className="flex flex-col h-10 p-4 b-2 space-y-4 space-x-4">
+          {tasks.map((task) => (
+            <li key={task._id} className="flex p-2 space-x-4">
+              <div className="pr-2">{task.title}</div>
+              
+              <button className="bg-red-600 p-2 text-white font-bold rounded-sm" onClick={() => deleteTask(task._id)}>Delete</button>
+              <button className="bg-purple-500 p-2 text-white font-bold rounded-sm" onClick={() => updateTask(task._id)}>Update</button>
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
   );
 }
